@@ -1,5 +1,5 @@
 import express from "express";
-import mysql from "mysql";
+import mysql from "mysql12";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -10,12 +10,16 @@ app.use(cors());
 dotenv.config();
 app.use(express.json());
 
-const db = mysql.createConnection({
+
+const connection = mysql.createConnection({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
-  port: process.env.MYSQLPORT || 3306
+  port: process.env.MYSQLPORT,
+  ssl: {
+    rejectUnauthorized: true, 
+  },
 });
 
 /*------------------------------------------CORS------------------------------------------*/
