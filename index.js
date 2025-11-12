@@ -283,8 +283,12 @@ app.put("/historial/salida/:idHistorial", autenticar, (req, res) => {
 
 /*------------------------------------------ Buscar Último Historial ------------------------------------------*/
 app.get("/historial/:idModulo", autenticar, (req, res) => {
-  const idPerfil = req.user.idPerfil;
+  const idPerfil = req.user?.idPerfil;
   const idModulo = req.params.idModulo;
+
+  console.log("🧩 Consultando historial:");
+  console.log("   → idPerfil:", idPerfil);
+  console.log("   → idModulo:", idModulo);
 
   const sql = `
     SELECT idHistorial, fechaIngresoModulo, fechaSalidaModulo, tiempoUso
@@ -296,19 +300,20 @@ app.get("/historial/:idModulo", autenticar, (req, res) => {
 
   db.query(sql, [idPerfil, idModulo], (err, result) => {
     if (err) {
-      console.error("❌ Error al obtener historial:", err);
-      return res.status(500).json({ message: "Error al obtener historial" });
+      console.error("❌ Error SQL al obtener historial:", err);
+      return res.status(500).json({ message: "Error SQL al obtener historial", error: err });
     }
 
     if (result.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "Sin registros para este módulo" });
+      console.log("⚠️ Sin registros encontrados.");
+      return res.status(404).json({ message: "Sin registros para este módulo" });
     }
 
+    console.log("✅ Último historial:", result[0]);
     res.json(result[0]);
   });
 });
+
 /*------------------------------------------Ruta Raíz------------------------------------------*/
 app.get("/", (req, res) => {
   res.send("Backend de ElektraSpace funcionando correctamente");
