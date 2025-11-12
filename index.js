@@ -11,7 +11,7 @@ dotenv.config();
 app.use(express.json());
 
 
-const connection = mysql.createConnection({
+const db = mysql.createConnection({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
