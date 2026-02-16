@@ -10,14 +10,22 @@ const app = express();
 dotenv.config();
 
 /*------------------------------------------CORS------------------------------------------*/
-app.use(
-  cors({
-    origin: "https://elektraspace.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (origin.includes("vercel.app")) {
+      return callback(null, true);
+    }
+
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true
+}));
+
+
+
 
 
 app.use(express.json());
